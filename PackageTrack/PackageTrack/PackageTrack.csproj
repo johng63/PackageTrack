@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Company>KLCNetworks</Company>
+    <Authors>JohnG</Authors>
   </PropertyGroup>
 
   <ItemGroup>
