@@ -2,6 +2,7 @@
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ZXing.Net.Mobile.Forms;
 
 namespace PackageTrack.Views
 {
@@ -11,6 +12,6 @@ namespace PackageTrack.Views
 		public AboutPage ()
 		{
 			InitializeComponent ();
-		}
+        }
 	}
 }
