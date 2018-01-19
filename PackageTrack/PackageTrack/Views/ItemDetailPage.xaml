@@ -4,8 +4,18 @@
              x:Class="PackageTrack.Views.ItemDetailPage"
              Title="{Binding Title}">
     <StackLayout Spacing="20" Padding="15">
-        <Label Text="Text:" FontSize="Medium" />
-        <Label Text="{Binding Item.Text}" FontSize="Small"/>
+        <Label Text="BarCode:" FontSize="Medium" />
+        <Label Text="{Binding Item.BarCode}" FontSize="Small"/>
+        <Label Text="Project:" FontSize="Medium" />
+        <Label Text="{Binding Item.Project}" FontSize="Small"/>
+        <Label Text="Checked In By:" FontSize="Medium" />
+        <Label Text="{Binding Item.CheckInUser}" FontSize="Small"/>
+        <Label Text="Check In Date:" FontSize="Medium" />
+        <Label Text="{Binding Item.CheckInDate}" FontSize="Small"/>
+        <Label Text="Checked Out By:" FontSize="Medium" />
+        <Label Text="{Binding Item.CheckInUser}" FontSize="Small"/>
+        <Label Text="Check Out Date:" FontSize="Medium" />
+        <Label Text="{Binding Item.CheckInDate}" FontSize="Small"/>
         <Label Text="Description:" FontSize="Medium" />
         <Label Text="{Binding Item.Description}" FontSize="Small"/>
     </StackLayout>

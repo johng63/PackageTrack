@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PackageTrack.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -26,6 +27,7 @@ namespace PackageTrack.Views
                 // Pop the page and show the result
                 Device.BeginInvokeOnMainThread(() => {
                     Navigation.PopAsync();
+
                     DisplayAlert("Scanned Barcode", result.Text, "OK");
                 });
             };

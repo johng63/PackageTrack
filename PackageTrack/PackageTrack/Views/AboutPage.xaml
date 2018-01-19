@@ -44,6 +44,8 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
+                <Label Text="{Binding Username}" FontSize="Medium"/>
+                <Label Text="{Binding Username1}" FontSize="Medium"/>
                 <Label>
                     <Label.FormattedText>
                         <FormattedString>

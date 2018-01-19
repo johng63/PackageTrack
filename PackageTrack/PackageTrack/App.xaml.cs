@@ -12,7 +12,6 @@ namespace PackageTrack
 		{
 			InitializeComponent();
 
-
             MainPage = new MainPage();
         }
 

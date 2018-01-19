@@ -11,6 +11,7 @@ namespace PackageTrack.Views
 		public MainPage ()
 		{
 			InitializeComponent ();
+            
 		}
 	}
 }

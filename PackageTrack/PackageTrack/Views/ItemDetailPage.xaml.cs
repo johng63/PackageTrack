@@ -26,7 +26,7 @@ namespace PackageTrack.Views
 
             var item = new Item
             {
-                Text = "Item 1",
+                BarCode = "Item 1",
                 Description = "This is an item description."
             };
 

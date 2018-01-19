@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using Accounts;
 using Foundation;
 using UIKit;
 
@@ -26,6 +26,8 @@ namespace PackageTrack.iOS
             global::Xamarin.Forms.Forms.Init();
 
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
+
+
 
             LoadApplication(new App());
 
