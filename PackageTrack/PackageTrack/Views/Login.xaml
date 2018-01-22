@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PackageTrack.Views.Login">
+    <ContentPage.Content>
+
+
+        <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="10" Spacing="10">
+            <Label StyleId="LoggedOnId" Text="{Binding Path=LoggedOnUser}"  />
+            <Entry StyleId="UserId" Text="{Binding Path=Username}" Placeholder="Username" />
+            <Entry StyleId="PasswordId" Text="{Binding Path=Password}" Placeholder="Password" IsPassword="true" />
+            <Button Text="Click this button for login" Clicked="Login_OnClicked"   />
+
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

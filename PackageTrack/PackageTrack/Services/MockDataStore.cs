@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PackageTrack.Models;
@@ -12,7 +13,8 @@ namespace PackageTrack.Services
     public class MockDataStore : IDataStore<Item>
     {
         HttpClient client = new HttpClient();
-        string RestUrlHead = "http://10.5.90.209:3000/items";
+        //string RestUrlHead = "http://10.5.90.209:3000/items";    //KLC Server
+        string RestUrlHead = "http://192.168.63.60:3000/items";  //Laptop
         List<Item> items;
         //string rawItems;
 
@@ -24,52 +26,19 @@ namespace PackageTrack.Services
             //var restItems = GetItemsFromRestAsync();
             var restItems = GetItemsAsync();
 
-
-
-
-
-
-            //var mockItems = new List<Item>
-            //{
-            //    new Item { Id = Guid.NewGuid().ToString(), BarCode = "First item", Description="This is an item description." },
-            //    new Item { Id = Guid.NewGuid().ToString(), BarCode = "Second item", Description="This is an item description." },
-            //    new Item { Id = Guid.NewGuid().ToString(), BarCode = "Third item", Description="This is an item description." },
-            //    new Item { Id = Guid.NewGuid().ToString(), BarCode = "Fourth item", Description="This is an item description." },
-            //    new Item { Id = Guid.NewGuid().ToString(), BarCode = "Fifth item", Description="This is an item description." },
-            //    new Item { Id = Guid.NewGuid().ToString(), BarCode = "Sixth item", Description="This is an item description." },
-            //};
-
-            //foreach (var item in restItems)
-            //{
-            //    items.Add(item);
-
-            //}
         }
-
-
-        //public async Task<List<Item>> GetItemsFromRestAsync()
-        //{
-           
-
-        //    var restItems = new List<Item>();
-        //    string RestUrl = this.RestUrlHead;
-        //    var uri = new Uri(string.Format(RestUrl, string.Empty));
-
-        //    var response = await client.GetAsync(uri);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var content = await response.Content.ReadAsStringAsync();
-        //        items = JsonConvert.DeserializeObject<List<Item>>(content);
-        //    }
-
-        //    return await Task.FromResult(restItems);
-        //}
 
         public async Task<bool> AddItemAsync(Item item)
         {
-            items.Add(item);
 
-            var restItems =  GetItemsAsync();
+            ItemAdd addItem = item;
+
+            Dictionary<string, string> dict = ConvertToDictionary(addItem);
+            var client = new HttpClient();
+            var req = new HttpRequestMessage(HttpMethod.Post, RestUrlHead) { Content = new FormUrlEncodedContent(dict) };
+            var res = await client.SendAsync(req);
+
+            var restItems = GetItemsAsync();
 
             return await Task.FromResult(true);
         }
@@ -109,6 +78,19 @@ namespace PackageTrack.Services
                 items = JsonConvert.DeserializeObject<List<Item>>(content);
             }
             return await Task.FromResult(items);
+        }
+
+        private static Dictionary<string, string> ConvertToDictionary(ItemAdd item)
+        {
+            var dict = new Dictionary<string, string>();
+
+            dict.Add("barcode", item.BarCode);
+            dict.Add("checkInUser", item.CheckInUser);
+            dict.Add("checkOutUser", item.CheckOutUser);
+            dict.Add("project", item.Project);
+            dict.Add("description", item.Description);
+
+            return dict;
         }
     }
 }
