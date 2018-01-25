@@ -3,7 +3,6 @@
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing.Net.Mobile.Forms;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 
 
 namespace PackageTrack.Views
@@ -15,8 +14,7 @@ namespace PackageTrack.Views
 		{
             
             InitializeComponent ();
-            UserInfo user1 = new UserInfo();
-            
+           
         }
 
         public AboutPage(string userName)

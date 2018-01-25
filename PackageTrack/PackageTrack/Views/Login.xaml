@@ -6,7 +6,8 @@
 
 
         <StackLayout HorizontalOptions="Center" VerticalOptions="Center" Padding="10" Spacing="10">
-            <Label StyleId="LoggedOnId" Text="{Binding Path=LoggedOnUser}"  />
+            <Label Text="{Binding Path=LoggedOnUser}"  FontSize="Medium"/>
+            <Button x:Name="start_btn" Clicked="goto_Main" Text="Goto Main Page" />
             <Entry StyleId="UserId" Text="{Binding Path=Username}" Placeholder="Username" />
             <Entry StyleId="PasswordId" Text="{Binding Path=Password}" Placeholder="Password" IsPassword="true" />
             <Button Text="Click this button for login" Clicked="Login_OnClicked"   />

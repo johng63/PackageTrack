@@ -6,51 +6,11 @@
 
 
     <TabbedPage.Children>
-
-        <NavigationPage Title="About">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_about.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
-            <x:Arguments>
-                <views:AboutPage />
-            </x:Arguments>
-        </NavigationPage>
         
-        <NavigationPage Title="Browse">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_feed.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
-            <x:Arguments>
-                <views:ItemsPage />
-            </x:Arguments>
-        </NavigationPage>
+        <views:ItemsPage Icon="tab_feed.png" />
+
+        <views:AboutPage Icon="tab_about.png" />
        
-        <NavigationPage Title="Scan">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_about.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
-            <x:Arguments>
-                <views:ScanPage />
-            </x:Arguments>
-        </NavigationPage>
-
-        <NavigationPage Title="Login">
-            <NavigationPage.Icon>
-                <OnPlatform x:TypeArguments="FileImageSource">
-                    <On Platform="iOS" Value="tab_about.png"/>
-                </OnPlatform>
-            </NavigationPage.Icon>
-            <x:Arguments>
-                <views:Login />
-            </x:Arguments>
-        </NavigationPage>
-
     </TabbedPage.Children>
     
 </TabbedPage>

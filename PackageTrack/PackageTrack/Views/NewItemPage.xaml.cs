@@ -14,15 +14,17 @@ namespace PackageTrack.Views
     {
         public Item Item { get; set; }
 
+        PropertiesHelper props;
+
         public NewItemPage()
         {
             InitializeComponent();
-
+            props = new PropertiesHelper();
             Item = new Item
             {
-                BarCode = "BarCode",
-                CheckInUser = "UserName",
-                Description = "This is an item description."
+                BarCode = "",
+                CheckInUser = props.GetPropertyValue("UserLoggedInUser"),
+                Description = ""
             };
 
             BindingContext = this;
@@ -31,7 +33,7 @@ namespace PackageTrack.Views
         async void Save_Clicked(object sender, EventArgs e)
         {
             MessagingCenter.Send(this, "AddItem", Item);
-            await Navigation.PopModalAsync();
+            await Navigation.PopAsync();
         }
 
 
@@ -42,20 +44,27 @@ namespace PackageTrack.Views
             scanPage.OnScanResult += (result) => {
                 // Stop scanning
                 scanPage.IsScanning = false;
-
+                
                 // Pop the page and show the result
-                Device.BeginInvokeOnMainThread(() => {
+                Device.BeginInvokeOnMainThread(() =>
+                {
                     Navigation.PopAsync();
 
-                    DisplayAlert("Scanned Barcode", result.Text, "OK");
+                    // Item = new Item
+                    //{
+                    Item.BarCode = result.Text;
+
+                    //};
+                    // DisplayAlert("Scanned Barcode", result.Text, "OK");
+                    
                 });
             };
-
+            //BindingContext = this;
             // Navigate to our scanner page
             await Navigation.PushAsync(scanPage);
 
-            MessagingCenter.Send(this, "AddItem", Item);
-            await Navigation.PopModalAsync();
+            //MessagingCenter.Send(this, "AddItem", Item);
+            //await Navigation.PopModalAsync();
         }
     }
 }

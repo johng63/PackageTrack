@@ -4,8 +4,8 @@
              x:Class="PackageTrack.Views.NewItemPage"
 		     Title="New Item">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Scan" Clicked="Scan_Clicked" />
-        <ToolbarItem Text="Save" Clicked="Save_Clicked" />
+        <ToolbarItem Text="Scan" Order="Secondary" Clicked="Scan_Clicked" />
+        <ToolbarItem Text="Save" Order="Secondary" Clicked="Save_Clicked" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="20" Padding="15">

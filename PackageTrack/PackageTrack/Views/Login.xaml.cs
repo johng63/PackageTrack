@@ -5,7 +5,6 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using PackageTrack.Models;
 using PackageTrack.Services;
 using PackageTrack.ViewModels;
@@ -19,13 +18,33 @@ namespace PackageTrack.Views
 	public partial class Login : ContentPage
 	{
         LoginViewModel loginViewModel;
+        PropertiesHelper props;
 
 		public Login()
 		{
 			InitializeComponent ();
             BindingContext = loginViewModel = new LoginViewModel();
+            props = new PropertiesHelper();
             loginViewModel.LoggedOnUser = "";
-           
+            start_btn.IsVisible = false;
+            string userloggedin = props.GetPropertyValue("UserLoggedInUser") as string;
+            if (userloggedin.Length > 0)
+            {
+                loginViewModel.LoggedOnUser = userloggedin + " is logged in.";
+                
+                start_btn.IsVisible = true;
+                //Device.BeginInvokeOnMainThread(() => {
+               // });
+
+            }
+               
+
+        }
+
+        private async void goto_Main(object sender, EventArgs e)
+        {
+            await Navigation.PushAsync(new MainPage());
+
         }
 
         private async void Login_OnClicked(object sender, EventArgs e)
@@ -40,11 +59,18 @@ namespace PackageTrack.Views
                     loginViewModel.LoggedOnUser = user.UserName + " you are now logged in.";
                     loginViewModel.Username = "";
                     loginViewModel.Password = "";
+                    props.SetPropertyValue("UserLoggedInUser", user.UserName);
+                    start_btn.IsVisible = true;
+
+                    await Navigation.PushAsync(new MainPage());
+
                 }
                 else
                 {
                     await App.Current.MainPage.DisplayAlert("Wrong Credentials", "Please Enter again", "OK");
                     loginViewModel.LoggedOnUser = "";
+                    props.SetPropertyValue("UserLoggedInUser", "");
+                    start_btn.IsVisible = false;
 
                 }
             }

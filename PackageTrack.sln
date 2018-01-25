@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTrack.Android", "Pac
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTrack.iOS", "PackageTrack\PackageTrack.iOS\PackageTrack.iOS.csproj", "{3B384582-7832-473D-9574-0BBE7F534CCE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PackageTrack", "PackageTrack\PackageTrack\PackageTrack.csproj", "{CF0A1F1D-2252-4A36-9180-D76ED476AE77}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PackageTrack", "PackageTrack\PackageTrack\PackageTrack.csproj", "{CF0A1F1D-2252-4A36-9180-D76ED476AE77}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
