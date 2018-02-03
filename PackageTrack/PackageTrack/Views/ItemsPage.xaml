@@ -79,6 +79,7 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
+            <Label Text="{Binding DBOnline}" FontSize="Medium"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

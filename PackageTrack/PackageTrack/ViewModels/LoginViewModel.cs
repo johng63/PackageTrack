@@ -6,11 +6,15 @@ namespace PackageTrack.ViewModels
 {
     public class LoginViewModel : BaseLoginViewModel
     {
+        PropertiesHelper props;
+
         public LoginViewModel()
         {
             Username = "";
             Password = "";
             LoggedOnUser = "";
+            PropertiesHelper props = new PropertiesHelper();
+            isDBOnline = props.GetPropertyValue("DatabaseOnline");
         }
 
         string username = string.Empty;
@@ -32,6 +36,13 @@ namespace PackageTrack.ViewModels
         {
             get { return loggedOnUser; }
             set { SetProperty(ref loggedOnUser, value); }
+        }
+
+        string isDBOnline = string.Empty;
+        public string DBOnline
+        {
+            get { return isDBOnline; }
+            set { SetProperty(ref isDBOnline, value); }
         }
     }
 }

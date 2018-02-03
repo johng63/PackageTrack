@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+//using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -25,6 +27,45 @@ namespace PackageTrack.Services
 
            // var restItems = GetItemsAsync();
 
+        }
+        public bool CheckServerConnection()
+        {
+            bool retVal = false;
+
+            //var pinger = new SimplePing("www.apple.com");
+
+            //pinger.Started += (sender, e) => {
+            //    var endpoint = e.EndPoint;
+            //    pinger.SendPing(null);
+            //};
+
+            //pinger.ResponseRecieved += (sender, e) => {
+            //    var seq = e.SequenceNumber;
+            //    var packet = e.Packet;
+            //};
+
+            //pinger.Start();
+            //Ping pingSender = new Ping();
+            /////IPAddress address = IPAddress.
+            //PingReply reply = pingSender.Send("192.168.63.60");
+
+
+            //if (reply.Status == IPStatus.Success)
+            //{
+            //    retVal = true;
+            //    //Console.WriteLine("Address: {0}", reply.Address.ToString());
+            //    //Console.WriteLine("RoundTrip time: {0}", reply.RoundtripTime);
+            //    //Console.WriteLine("Time to live: {0}", reply.Options.Ttl);
+            //    //Console.WriteLine("Don't fragment: {0}", reply.Options.DontFragment);
+            //    //Console.WriteLine("Buffer size: {0}", reply.Buffer.Length);
+            //}
+            //else
+            //{
+            //    //Console.WriteLine(reply.Status);
+            //    retVal = false;
+            //}
+
+            return retVal;
         }
 
         public async Task<bool> AddItemAsync(User user)

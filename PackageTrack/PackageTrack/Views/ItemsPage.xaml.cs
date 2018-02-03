@@ -17,12 +17,16 @@ namespace PackageTrack.Views
 	public partial class ItemsPage : ContentPage
 	{
         ItemsViewModel viewModel;
+        PropertiesHelper prop;
 
         public ItemsPage()
         {
             InitializeComponent();
 
             BindingContext = viewModel = new ItemsViewModel();
+            PropertiesHelper prop = new PropertiesHelper();
+            viewModel.DBOnline = prop.GetPropertyValue("DatabaseOnline");
+
         }
 
         async void OnItemSelected(object sender, SelectedItemChangedEventArgs args)

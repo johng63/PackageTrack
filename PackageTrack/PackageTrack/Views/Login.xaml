@@ -10,7 +10,8 @@
             <Button x:Name="start_btn" Clicked="goto_Main" Text="Goto Main Page" />
             <Entry StyleId="UserId" Text="{Binding Path=Username}" Placeholder="Username" />
             <Entry StyleId="PasswordId" Text="{Binding Path=Password}" Placeholder="Password" IsPassword="true" />
-            <Button Text="Click this button for login" Clicked="Login_OnClicked"   />
+            <Button x:Name="login_btn" Text="Click this button for login" Clicked="Login_OnClicked"   />
+            <Label Text="{Binding DBOnline}" FontSize="Medium"/>
 
         </StackLayout>
     </ContentPage.Content>

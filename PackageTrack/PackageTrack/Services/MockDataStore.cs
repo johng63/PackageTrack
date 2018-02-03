@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+//using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PackageTrack.Models;
+
 
 [assembly: Xamarin.Forms.Dependency(typeof(PackageTrack.Services.MockDataStore))]
 namespace PackageTrack.Services
@@ -16,16 +20,18 @@ namespace PackageTrack.Services
         //string RestUrlHead = "http://10.5.90.209:3000/items";    //KLC Server
         string RestUrlHead = "http://192.168.63.60:3000/items";  //Laptop
         List<Item> items;
+        PropertiesHelper props;
+        
         //string rawItems;
+        FileEngine fileEngine = new FileEngine();
 
         public MockDataStore()
         {
             items = new List<Item>();
             client.MaxResponseContentBufferSize = 256000;
+            props = new PropertiesHelper();
 
-            //var restItems = GetItemsFromRestAsync();
             var restItems = GetItemsAsync();
-
         }
 
         public async Task<bool> AddItemAsync(Item item)
@@ -38,22 +44,48 @@ namespace PackageTrack.Services
             var req = new HttpRequestMessage(HttpMethod.Post, RestUrlHead) { Content = new FormUrlEncodedContent(dict) };
             var res = await client.SendAsync(req);
 
-            var restItems = GetItemsAsync();
+            var items = GetItemsAsync();
 
             return await Task.FromResult(true);
         }
 
         public async Task<bool> UpdateItemAsync(Item item)
         {
+            //Add Item update to DB
             var _item = items.Where((Item arg) => arg._id == item._id).FirstOrDefault();
             items.Remove(_item);
             items.Add(item);
 
             return await Task.FromResult(true);
         }
+        public bool CheckServerConnection()
+        {
+            //Ping pingSender = new Ping();
+            /////IPAddress address = IPAddress.
+            //PingReply reply = pingSender.Send("192.168.63.60");
+            bool retVal = false;
+
+            //if (reply.Status == IPStatus.Success)
+            //{
+            //    retVal = true;
+            //    //Console.WriteLine("Address: {0}", reply.Address.ToString());
+            //    //Console.WriteLine("RoundTrip time: {0}", reply.RoundtripTime);
+            //    //Console.WriteLine("Time to live: {0}", reply.Options.Ttl);
+            //    //Console.WriteLine("Don't fragment: {0}", reply.Options.DontFragment);
+            //    //Console.WriteLine("Buffer size: {0}", reply.Buffer.Length);
+            //}
+            //else
+            //{
+            //    //Console.WriteLine(reply.Status);
+            //    retVal = false;
+            //}
+
+            return retVal;
+        }
 
         public async Task<bool> DeleteItemAsync(Item item)
         {
+            //Add Item remove from DB
             var _item = items.Where((Item arg) => arg._id == item._id).FirstOrDefault();
             items.Remove(_item);
 
@@ -68,16 +100,58 @@ namespace PackageTrack.Services
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
         {
             var restItems = new List<Item>();
-            string RestUrl = this.RestUrlHead;
-            var uri = new Uri(string.Format(RestUrl, string.Empty));
 
-            var response = await client.GetAsync(uri);
-            if (response.IsSuccessStatusCode)
+            if (props.GetPropertyValue("DatabaseOnline").Equals("Online"))
             {
-                var content = await response.Content.ReadAsStringAsync();
-                items = JsonConvert.DeserializeObject<List<Item>>(content);
+                try
+                {
+                    using (var client = new HttpClient
+                    {
+                        Timeout = TimeSpan.FromMilliseconds(15000)
+                    })
+                    {
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        string RestUrl = this.RestUrlHead;
+
+                        var response = await client.GetAsync(new Uri(string.Format(RestUrl, string.Empty)));
+
+                        HttpStatusCode statusCode = response.StatusCode;
+
+                        var content = await response.Content.ReadAsStringAsync();
+
+                        props.SetPropertyValue("DatabaseOnline", "Online");
+
+                        await fileEngine.WriteTextAsync("PackageData.json", content);
+
+                        restItems = Newtonsoft.Json.JsonConvert.DeserializeObject<List<Item>>(content);
+
+                    }
+
+                }
+                catch (TaskCanceledException tcex)
+                {
+                    restItems = await GetOfflineData(restItems);
+                }
+                catch (Exception ex)
+                {
+                    restItems = await GetOfflineData(restItems);
+                }
             }
-            return await Task.FromResult(items);
+            else
+            {
+                restItems = await GetOfflineData(restItems);
+            }
+
+
+            return restItems;
+        }
+
+        private async Task<List<Item>> GetOfflineData(List<Item> restItems)
+        {
+            props.SetPropertyValue("DatabaseOnline", "Offline");
+            var content = await fileEngine.ReadTextAsync("PackageData.json");
+            restItems = JsonConvert.DeserializeObject<List<Item>>(content);
+            return restItems;
         }
 
         private static Dictionary<string, string> ConvertToDictionary(ItemAdd item)

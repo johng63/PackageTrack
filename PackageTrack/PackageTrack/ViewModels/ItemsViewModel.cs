@@ -14,11 +14,13 @@ namespace PackageTrack.ViewModels
     {
         public ObservableCollection<Item> Items { get; set; }
         public Command LoadItemsCommand { get; set; }
+        PropertiesHelper props;
 
         public ItemsViewModel()
         {
             Title = "Browse";
             Items = new ObservableCollection<Item>();
+            props = new PropertiesHelper();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
             MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
@@ -28,7 +30,12 @@ namespace PackageTrack.ViewModels
                 await DataStore.AddItemAsync(_item);
             });
         }
-
+        string isDBOnline = string.Empty;
+        public string DBOnline
+        {
+            get { return isDBOnline; }
+            set { SetProperty(ref isDBOnline, value) ; }
+        }
         async Task ExecuteLoadItemsCommand()
         {
             if (IsBusy)
@@ -44,6 +51,7 @@ namespace PackageTrack.ViewModels
                 {
                     Items.Add(item);
                 }
+                isDBOnline = props.GetPropertyValue("DatabaseOnline");
             }
             catch (Exception ex)
             {
