@@ -18,17 +18,21 @@ namespace PackageTrack.ViewModels
 
         public ItemsViewModel()
         {
+            Console.WriteLine("JFG-itemviewModel init");
             Title = "Browse";
             Items = new ObservableCollection<Item>();
             props = new PropertiesHelper();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-            MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
-            {
-                var _item = item as Item;
-                Items.Add(_item);
-                await DataStore.AddItemAsync(_item);
-            });
+          //  MessagingCenter.Unsubscribe<NewItemPage, Item>(this, "AddItem");
+            //Console.WriteLine("JFG-itemview un-subscribe");
+            //MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
+            //{
+            //    //var _item = item as Item;
+            //    //Items.Add(_item);
+            //    //Console.WriteLine("JFG-itemview subscribe");
+            //    //await DataStore.AddItemAsync(_item);
+            //});
         }
         string isDBOnline = string.Empty;
         public string DBOnline
@@ -62,5 +66,13 @@ namespace PackageTrack.ViewModels
                 IsBusy = false;
             }
         }
+
+    //protected  void OnDisappearing()
+    //{
+    //        Console.WriteLine("JFG-itemviewModel On-Disapearing Un-subscribe");
+    //        MessagingCenter.Unsubscribe<NewItemPage, Item>(this, "AddItem");
+    //    }
     }
+
+
 }

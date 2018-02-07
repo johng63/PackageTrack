@@ -70,6 +70,7 @@
   <ItemGroup>
     <Compile Include="FileEngine.cs" />
     <Compile Include="MainActivity.cs" />
+    <Compile Include="Pinger.cs" />
     <Compile Include="Resources\Resource.Designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

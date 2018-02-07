@@ -43,7 +43,7 @@ namespace PackageTrack.Services
             var client = new HttpClient();
             var req = new HttpRequestMessage(HttpMethod.Post, RestUrlHead) { Content = new FormUrlEncodedContent(dict) };
             var res = await client.SendAsync(req);
-
+            Console.WriteLine("JFG-additemasync - mockdatastore");
             var items = GetItemsAsync();
 
             return await Task.FromResult(true);
@@ -58,30 +58,30 @@ namespace PackageTrack.Services
 
             return await Task.FromResult(true);
         }
-        public bool CheckServerConnection()
-        {
-            //Ping pingSender = new Ping();
-            /////IPAddress address = IPAddress.
-            //PingReply reply = pingSender.Send("192.168.63.60");
-            bool retVal = false;
+        //public bool CheckServerConnection()
+        //{
+        //    //Ping pingSender = new Ping();
+        //    /////IPAddress address = IPAddress.
+        //    //PingReply reply = pingSender.Send("192.168.63.60");
+        //    bool retVal = false;
 
-            //if (reply.Status == IPStatus.Success)
-            //{
-            //    retVal = true;
-            //    //Console.WriteLine("Address: {0}", reply.Address.ToString());
-            //    //Console.WriteLine("RoundTrip time: {0}", reply.RoundtripTime);
-            //    //Console.WriteLine("Time to live: {0}", reply.Options.Ttl);
-            //    //Console.WriteLine("Don't fragment: {0}", reply.Options.DontFragment);
-            //    //Console.WriteLine("Buffer size: {0}", reply.Buffer.Length);
-            //}
-            //else
-            //{
-            //    //Console.WriteLine(reply.Status);
-            //    retVal = false;
-            //}
+        //    //if (reply.Status == IPStatus.Success)
+        //    //{
+        //    //    retVal = true;
+        //    //    //Console.WriteLine("Address: {0}", reply.Address.ToString());
+        //    //    //Console.WriteLine("RoundTrip time: {0}", reply.RoundtripTime);
+        //    //    //Console.WriteLine("Time to live: {0}", reply.Options.Ttl);
+        //    //    //Console.WriteLine("Don't fragment: {0}", reply.Options.DontFragment);
+        //    //    //Console.WriteLine("Buffer size: {0}", reply.Buffer.Length);
+        //    //}
+        //    //else
+        //    //{
+        //    //    //Console.WriteLine(reply.Status);
+        //    //    retVal = false;
+        //    //}
 
-            return retVal;
-        }
+        //    return retVal;
+        //}
 
         public async Task<bool> DeleteItemAsync(Item item)
         {
@@ -107,7 +107,7 @@ namespace PackageTrack.Services
                 {
                     using (var client = new HttpClient
                     {
-                        Timeout = TimeSpan.FromMilliseconds(15000)
+                        Timeout = TimeSpan.FromMilliseconds(30000)
                     })
                     {
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
@@ -148,7 +148,7 @@ namespace PackageTrack.Services
 
         private async Task<List<Item>> GetOfflineData(List<Item> restItems)
         {
-            props.SetPropertyValue("DatabaseOnline", "Offline");
+            //props.SetPropertyValue("DatabaseOnline", "Offline");
             var content = await fileEngine.ReadTextAsync("PackageData.json");
             restItems = JsonConvert.DeserializeObject<List<Item>>(content);
             return restItems;

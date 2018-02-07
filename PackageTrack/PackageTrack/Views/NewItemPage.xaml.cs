@@ -6,12 +6,14 @@ using Xamarin.Forms.Xaml;
 
 using PackageTrack.Models;
 using ZXing.Net.Mobile.Forms;
+using PackageTrack.Services;
 
 namespace PackageTrack.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NewItemPage : ContentPage
     {
+        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? new MockDataStore();
         public Item Item { get; set; }
 
         PropertiesHelper props;
@@ -32,12 +34,20 @@ namespace PackageTrack.Views
 
         async void Save_Clicked(object sender, EventArgs e)
         {
-            MessagingCenter.Send(this, "AddItem", Item);
+            Console.WriteLine("JFG-newitempage - save_clicked");
+           // MessagingCenter.Send(this, "AddItem", Item);
+            await DataStore.AddItemAsync(Item);
             await Navigation.PopAsync();
         }
+        //protected override void OnDisappearing()
+        //{
+        //    base.OnDisappearing();
+        //    Console.WriteLine("JFG-newpageItem On-Disapearing Un-subscribe");
+        //    MessagingCenter.Unsubscribe<NewItemPage, Item>(this, "AddItem");
+        //}
+    
 
-
-        async void Scan_Clicked(object sender, EventArgs e)
+    async void Scan_Clicked(object sender, EventArgs e)
         {
             var scanPage = new ZXingScannerPage();
 

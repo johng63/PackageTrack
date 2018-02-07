@@ -24,7 +24,7 @@ namespace PackageTrack.Views
             InitializeComponent();
 
             BindingContext = viewModel = new ItemsViewModel();
-            PropertiesHelper prop = new PropertiesHelper();
+            prop = new PropertiesHelper();
             viewModel.DBOnline = prop.GetPropertyValue("DatabaseOnline");
 
         }
@@ -55,5 +55,12 @@ namespace PackageTrack.Views
             if (viewModel.Items.Count == 0)
                 viewModel.LoadItemsCommand.Execute(null);
         }
-    }
+        //protected override void OnDisappearing()
+        //{
+        //    base.OnDisappearing();
+        //    Console.WriteLine("JFG-ItemPage.cs On-Disapearing Un-subscribe");
+        //    MessagingCenter.Unsubscribe<NewItemPage, Item>(this, "AddItem");
+        //}
+    
+}
 }

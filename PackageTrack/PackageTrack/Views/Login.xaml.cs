@@ -26,13 +26,15 @@ namespace PackageTrack.Views
 			InitializeComponent ();
             BindingContext = loginViewModel = new LoginViewModel();
             UserDataStore uds = new UserDataStore();
+            Pinger pinger = new Pinger();
+
             props = new PropertiesHelper();
 
             loginViewModel.LoggedOnUser = "";
             start_btn.IsVisible = false;
             string userloggedin = props.GetPropertyValue("UserLoggedInUser") as string;
 
-            if (uds.CheckServerConnection())
+            if (pinger.PingAddress("192.168.63.60"))
             {
                 props.SetPropertyValue("DatabaseOnline", "Online");
                 loginViewModel.DBOnline = "Online";
@@ -52,8 +54,6 @@ namespace PackageTrack.Views
                 loginViewModel.LoggedOnUser = userloggedin + " is logged in.";
 
                 start_btn.IsVisible = true;
-                //Device.BeginInvokeOnMainThread(() => {
-                // });
 
             }
 
@@ -69,9 +69,9 @@ namespace PackageTrack.Views
         private async void Login_OnClicked(object sender, EventArgs e)
         {
             
-
-            User user = await uds.GetItemAsync("jfgianni");
-            if (user.UserName.Length > 0)
+            UserDataStore uds = new UserDataStore();
+            User user = await uds.GetItemAsync(loginViewModel.Username);
+            if (user != null && user.UserName.Length > 0)
             {
                 if (loginViewModel.Password.Equals(user.Password))
                 {
