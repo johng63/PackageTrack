@@ -6,8 +6,7 @@ namespace PackageTrack.ViewModels
 {
     public class LoginViewModel : BaseLoginViewModel
     {
-        PropertiesHelper props;
-
+        
         public LoginViewModel()
         {
             Username = "";

@@ -18,14 +18,11 @@ namespace PackageTrack.ViewModels
 
         public ItemsViewModel()
         {
-            Console.WriteLine("JFG-itemviewModel init");
             Title = "Browse";
             Items = new ObservableCollection<Item>();
             props = new PropertiesHelper();
             LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommand());
 
-          //  MessagingCenter.Unsubscribe<NewItemPage, Item>(this, "AddItem");
-            //Console.WriteLine("JFG-itemview un-subscribe");
             //MessagingCenter.Subscribe<NewItemPage, Item>(this, "AddItem", async (obj, item) =>
             //{
             //    //var _item = item as Item;

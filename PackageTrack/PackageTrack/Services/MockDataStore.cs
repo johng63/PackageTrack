@@ -43,7 +43,7 @@ namespace PackageTrack.Services
             var client = new HttpClient();
             var req = new HttpRequestMessage(HttpMethod.Post, RestUrlHead) { Content = new FormUrlEncodedContent(dict) };
             var res = await client.SendAsync(req);
-            Console.WriteLine("JFG-additemasync - mockdatastore");
+           // Console.WriteLine("JFG-additemasync - mockdatastore");
             var items = GetItemsAsync();
 
             return await Task.FromResult(true);
@@ -131,10 +131,12 @@ namespace PackageTrack.Services
                 catch (TaskCanceledException tcex)
                 {
                     restItems = await GetOfflineData(restItems);
+                    Console.WriteLine("taskcanceled: " + tcex.Message);
                 }
                 catch (Exception ex)
                 {
                     restItems = await GetOfflineData(restItems);
+                    Console.WriteLine("taskexception: " + ex.Message);
                 }
             }
             else
@@ -156,13 +158,14 @@ namespace PackageTrack.Services
 
         private static Dictionary<string, string> ConvertToDictionary(ItemAdd item)
         {
-            var dict = new Dictionary<string, string>();
-
-            dict.Add("barcode", item.BarCode);
-            dict.Add("checkInUser", item.CheckInUser);
-            dict.Add("checkOutUser", item.CheckOutUser);
-            dict.Add("project", item.Project);
-            dict.Add("description", item.Description);
+            var dict = new Dictionary<string, string>
+            {
+                { "barcode", item.BarCode },
+                { "checkInUser", item.CheckInUser },
+                { "checkOutUser", item.CheckOutUser },
+                { "project", item.Project },
+                { "description", item.Description }
+            };
 
             return dict;
         }

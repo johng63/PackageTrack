@@ -10,6 +10,7 @@ using Xamarin.Forms.Xaml;
 using PackageTrack.Models;
 using PackageTrack.Views;
 using PackageTrack.ViewModels;
+using ZXing.Net.Mobile.Forms;
 
 namespace PackageTrack.Views
 {
@@ -17,15 +18,16 @@ namespace PackageTrack.Views
 	public partial class ItemsPage : ContentPage
 	{
         ItemsViewModel viewModel;
-        PropertiesHelper prop;
+        PropertiesHelper props;
+        string barCodeReturned = "";
 
         public ItemsPage()
         {
             InitializeComponent();
 
             BindingContext = viewModel = new ItemsViewModel();
-            prop = new PropertiesHelper();
-            viewModel.DBOnline = prop.GetPropertyValue("DatabaseOnline");
+            props = new PropertiesHelper();
+            viewModel.DBOnline = props.GetPropertyValue("DatabaseOnline");
 
         }
 
@@ -43,9 +45,42 @@ namespace PackageTrack.Views
 
         async void AddItem_Clicked(object sender, EventArgs e)
         {
+            var scanPage = new ZXingScannerPage();
+            barCodeReturned = "";
+
+            scanPage.Disappearing += ScanPage_Disappearing;
+         
+
+
+        scanPage.OnScanResult += (result) => {
+                // Stop scanning
+                scanPage.IsScanning = false;
+                
+                // Pop the page and show the result
+                Device.BeginInvokeOnMainThread(() =>
+                {
+
+                    // Item = new Item
+                    //{
+                    barCodeReturned = result.Text;
+                    Navigation.PopAsync();
+                    
+
+                    //};
+                    // DisplayAlert("Scanned Barcode", result.Text, "OK");
+
+                });
+            };
             // await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
-            
-            await Navigation.PushAsync(new NewItemPage());
+            await Navigation.PushAsync(scanPage);
+          //  Navigation.PushAsync(new NewItemPage(barCodeReturned));
+            ///await  Navigation.PopAsync();
+        }
+
+        private void ScanPage_Disappearing(object sender, EventArgs e)
+        {
+            Navigation.PushAsync(new NewItemPage(barCodeReturned));
+
         }
 
         protected override void OnAppearing()

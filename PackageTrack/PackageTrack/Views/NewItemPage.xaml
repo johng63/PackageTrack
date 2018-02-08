@@ -4,8 +4,8 @@
              x:Class="PackageTrack.Views.NewItemPage"
 		     Title="New Item">
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Scan" Order="Secondary" Clicked="Scan_Clicked" />
-        <ToolbarItem Text="Save" Order="Secondary" Clicked="Save_Clicked" />
+
+        <ToolbarItem Text="Save" Order="Primary" Clicked="Save_Clicked" />
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Spacing="20" Padding="15">
@@ -14,7 +14,7 @@
             <Label Text="Checked In User" FontSize="Medium" />
             <Entry Text="{Binding Item.CheckInUser}" FontSize="Small" />
             <Label Text="Description" FontSize="Medium" />
-            <Editor Text="{Binding Item.Description}" FontSize="Small" Margin="0" />
+            <Entry Text="{Binding Item.Description}" FontSize="Small" Margin="0" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

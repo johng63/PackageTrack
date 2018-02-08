@@ -7,24 +7,34 @@ using Xamarin.Forms.Xaml;
 using PackageTrack.Models;
 using ZXing.Net.Mobile.Forms;
 using PackageTrack.Services;
+using PackageTrack.ViewModels;
+using System.Collections.ObjectModel;
 
 namespace PackageTrack.Views
 {
+
+
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class NewItemPage : ContentPage
     {
-        public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>() ?? new MockDataStore();
+        public ObservableCollection<Item> Items { get; set; }
+        NewItemModel newItemModel;
+  
         public Item Item { get; set; }
 
         PropertiesHelper props;
+       // private string barCode = "";
 
-        public NewItemPage()
+        public NewItemPage(string barCode)
         {
             InitializeComponent();
             props = new PropertiesHelper();
+            Items = new ObservableCollection<Item>();
+            BindingContext = newItemModel = new NewItemModel();
+
             Item = new Item
             {
-                BarCode = "",
+                BarCode = barCode,
                 CheckInUser = props.GetPropertyValue("UserLoggedInUser"),
                 Description = ""
             };
@@ -36,7 +46,8 @@ namespace PackageTrack.Views
         {
             Console.WriteLine("JFG-newitempage - save_clicked");
            // MessagingCenter.Send(this, "AddItem", Item);
-            await DataStore.AddItemAsync(Item);
+            await newItemModel.DataStore.AddItemAsync(Item);
+            Items.Add(Item);
             await Navigation.PopAsync();
         }
         //protected override void OnDisappearing()
@@ -47,34 +58,47 @@ namespace PackageTrack.Views
         //}
     
 
-    async void Scan_Clicked(object sender, EventArgs e)
-        {
-            var scanPage = new ZXingScannerPage();
+    //async void Scan_Clicked(object sender, EventArgs e)
+    //    {
+    //        var scanPage = new ZXingScannerPage();
 
-            scanPage.OnScanResult += (result) => {
-                // Stop scanning
-                scanPage.IsScanning = false;
+    //        scanPage.OnScanResult += (result) => {
+    //            // Stop scanning
+    //            scanPage.IsScanning = false;
                 
-                // Pop the page and show the result
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    Navigation.PopAsync();
+    //            // Pop the page and show the result
+    //            Device.BeginInvokeOnMainThread(() =>
+    //            {
 
-                    // Item = new Item
-                    //{
-                    Item.BarCode = result.Text;
 
-                    //};
-                    // DisplayAlert("Scanned Barcode", result.Text, "OK");
-                    
-                });
-            };
-            //BindingContext = this;
-            // Navigate to our scanner page
-            await Navigation.PushAsync(scanPage);
+    //                // Item = new Item
+    //                //{
+    //                barCode = result.Text;
 
-            //MessagingCenter.Send(this, "AddItem", Item);
-            //await Navigation.PopModalAsync();
-        }
+
+    //                Navigation.PopAsync();
+    //                //};
+    //                // DisplayAlert("Scanned Barcode", result.Text, "OK");
+
+    //            });
+    //        };
+    //        //BindingContext = this;
+    //        // Navigate to our scanner page
+    //       await  Navigation.PushAsync(scanPage);
+    //        Item.BarCode = barCode;
+    //        newItemModel.BarCode = barCode;
+    //        //BindingContext = this;
+    //        //MessagingCenter.Send(this, "AddItem", Item);
+    //        //await Navigation.PopModalAsync();
+    //    }
+
+        //protected override void OnAppearing()
+        //{
+        //    base.OnAppearing();
+        //    Item.BarCode = barCode;
+        //    newItemModel.BarCode = barCode;
+        //    BindingContext = this;
+
+        //}
     }
 }

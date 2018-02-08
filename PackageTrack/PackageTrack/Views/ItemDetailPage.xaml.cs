@@ -33,5 +33,13 @@ namespace PackageTrack.Views
             viewModel = new ItemDetailViewModel(item);
             BindingContext = viewModel;
         }
+
+        async void Save_Clicked(object sender, EventArgs e)
+        {
+            
+            // MessagingCenter.Send(this, "AddItem", Item);
+            //await DataStore.AddItemAsync(Item);
+            await Navigation.PopAsync();
+        }
     }
 }
