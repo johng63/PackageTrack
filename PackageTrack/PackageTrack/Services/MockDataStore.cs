@@ -52,9 +52,14 @@ namespace PackageTrack.Services
         public async Task<bool> UpdateItemAsync(Item item)
         {
             //Add Item update to DB
-            var _item = items.Where((Item arg) => arg._id == item._id).FirstOrDefault();
-            items.Remove(_item);
-            items.Add(item);
+            //var _item = items.Where((Item arg) => arg._id == item._id).FirstOrDefault();
+            //items.Remove(_item);
+            //items.Add(item);
+            ItemAdd addItem = item;
+            Dictionary<string, string> dict = ConvertToDictionaryUpdate(addItem);
+            var client = new HttpClient();
+            var req = new HttpRequestMessage(HttpMethod.Put, RestUrlHead + "/" + item._id) { Content = new FormUrlEncodedContent(dict) };
+            var res = await client.SendAsync(req);
 
             return await Task.FromResult(true);
         }
@@ -163,6 +168,17 @@ namespace PackageTrack.Services
                 { "barcode", item.BarCode },
                 { "checkInUser", item.CheckInUser },
                 { "checkOutUser", item.CheckOutUser },
+                { "project", item.Project },
+                { "description", item.Description }
+            };
+
+            return dict;
+        }
+
+        private static Dictionary<string, string> ConvertToDictionaryUpdate(ItemAdd item)
+        {
+            var dict = new Dictionary<string, string>
+            {
                 { "project", item.Project },
                 { "description", item.Description }
             };

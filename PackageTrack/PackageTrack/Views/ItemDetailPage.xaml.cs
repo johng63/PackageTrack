@@ -36,9 +36,10 @@ namespace PackageTrack.Views
 
         async void Save_Clicked(object sender, EventArgs e)
         {
-            
+
             // MessagingCenter.Send(this, "AddItem", Item);
-            //await DataStore.AddItemAsync(Item);
+            await viewModel.DataStore.UpdateItemAsync(viewModel.Item);
+
             await Navigation.PopAsync();
         }
     }
