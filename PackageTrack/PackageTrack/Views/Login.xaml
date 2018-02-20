@@ -2,6 +2,10 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="PackageTrack.Views.Login">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Server" Order="Secondary" Clicked="Server_Clicked" />
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
 
 

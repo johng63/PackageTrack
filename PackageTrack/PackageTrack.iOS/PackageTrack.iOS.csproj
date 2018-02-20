@@ -96,7 +96,6 @@
     <Compile Include="FileEngine.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
-    <Compile Include="Reachability.cs" />
     <None Include="Entitlements.plist">
       <SubType>Designer</SubType>
     </None>
@@ -139,10 +138,10 @@
     <PackageReference Include="PCLStorage">
       <Version>1.0.2</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="2.5.0.121934" />
-    <PackageReference Include="Xamarin.SimplePing">
-      <Version>1.4.0</Version>
+    <PackageReference Include="Xam.Plugin.Connectivity">
+      <Version>4.0.0.186-beta</Version>
     </PackageReference>
+    <PackageReference Include="Xamarin.Forms" Version="2.5.0.121934" />
     <PackageReference Include="ZXing.Net.Mobile.Forms">
       <Version>2.3.2</Version>
     </PackageReference>

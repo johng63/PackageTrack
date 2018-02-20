@@ -7,6 +7,10 @@ using Foundation;
 using UIKit;
 using Xamarin.Forms;
 using Xamarin.SimplePing;
+using Foundation;
+
+using System.Threading.Tasks;
+using Plugin.Connectivity;
 
 [assembly: Dependency(typeof(PackageTrack.iOS.Pinger))]
 namespace PackageTrack.iOS
@@ -29,8 +33,15 @@ namespace PackageTrack.iOS
 
         public bool PingAddress(string address)
         {
-            bool retVal = false;
+            bool retVal = true;
             this.address = address;
+            //Uri uri = new Uri("http://" + address + "");
+
+            //if (CrossConnectivity.Current.IsReachable(address).Result == false)
+            //{
+            //    retVal = false;
+            //}
+
 
             if (Reachability.IsHostReachable(address))
             {
@@ -49,6 +60,56 @@ namespace PackageTrack.iOS
             //}
             return retVal;
         }
+        //public bool PingAddress(string address)
+        //{
+        //    return IsConnected();
+        //}
+        //public async bool IsConnected()
+        //{
+        //    Task<bool> task = checkConnectivity();
+
+
+        //    bool test = await task;
+
+        //    return test;
+
+        //}
+
+        //public bool checkConnectivity()
+        //{
+
+        //    bool retVal = true;
+        //    var pinger = new SimplePing("192.168.63.60");
+
+        //    pinger.Started += (sender, e) =>
+        //    {
+        //        var endpoint = e.EndPoint;
+        //        pinger.SendPing(null);
+        //    };
+
+        //    pinger.ResponseRecieved += (sender, e) =>
+        //    {
+        //        var seq = e.SequenceNumber;
+        //        var packet = e.Packet;
+        //    };
+
+        //    pinger.Sent += (sender, e) =>
+        //    {
+        //        var seq = e.SequenceNumber;
+        //        var packet = e.Packet;
+        //    };
+
+        //    pinger.Failed += (sender, e) =>
+        //    {
+        //        retVal = false;
+        //    };
+
+        //    pinger.Start();
+
+        //    pinger.Stop();
+
+        //    return retVal;
+        //}
 
         //public  void ViewDidLoad()
         //{
@@ -88,7 +149,7 @@ namespace PackageTrack.iOS
         //    pinger.UnexpectedResponse += OnUnexpectedResponse;
 
         //    pinger.Start();
-            
+
         //}
 
         ///// <summary>

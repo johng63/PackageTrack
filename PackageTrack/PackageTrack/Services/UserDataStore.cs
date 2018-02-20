@@ -16,18 +16,39 @@ namespace PackageTrack.Services
     {
         HttpClient client = new HttpClient();
         //string RestUrlHead = "http://10.5.90.209:3100/users";    //KLC Server
-        string RestUrlHead = "http://192.168.63.60:3100/users";  //Laptop
+        string RestUrlHead;
+        //string RestUrlHead = "http://192.168.10.109:3100/users";
         List<User> users;
         //string rawItems;
+        PropertiesHelper props;
+        string server;
 
         public UserDataStore()
         {
             users = new List<User>();
             client.MaxResponseContentBufferSize = 256000;
+            props = new PropertiesHelper();
+            server = props.GetPropertyValue("Server");
 
-           // var restItems = GetItemsAsync();
+            if (server == null || server.Length == 0)
+            {
+                //DisplayAlert("Alert", "You are not online", "OK");
+            }
+            else
+            {
+                GetRestURL(server);
+
+            }
+
+            // var restItems = GetItemsAsync();
 
         }
+
+        private void GetRestURL(string server)
+        {
+            RestUrlHead = "http://" + server + ":3100/users";
+        }
+
         //public bool CheckServerConnection()
         //{
         //    bool retVal = false;
@@ -72,6 +93,7 @@ namespace PackageTrack.Services
         {
 
             UserAdd addUser = user;
+            GetRestURL(server);
 
             Dictionary<string, string> dict = ConvertToDictionary(addUser);
             var client = new HttpClient();
@@ -102,6 +124,7 @@ namespace PackageTrack.Services
 
         public async Task<User> GetItemAsync(string username)
         {
+            GetRestURL(server);
             var restItems = new List<User>();
             User user = new User();
             string RestUrl = this.RestUrlHead + "/" + username;
@@ -110,9 +133,14 @@ namespace PackageTrack.Services
             var response = await client.GetAsync(uri);
             if (response.IsSuccessStatusCode)
             {
+                props.SetPropertyValue("DatabaseOnline", "Online");
                 var content = await response.Content.ReadAsStringAsync();
                 user = JsonConvert.DeserializeObject<User>(content);
                 users.Add(user);
+            }
+            else
+            {
+                props.SetPropertyValue("DatabaseOnline", "Offline");
             }
             // return await Task.FromResult(users.FirstOrDefault(s => s.UserName == username));
             return await Task.FromResult(user);

@@ -11,6 +11,7 @@ using PackageTrack.ViewModels;
 using PackageTrack.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using Plugin.Connectivity;
 
 namespace PackageTrack.Views
 {
@@ -19,7 +20,8 @@ namespace PackageTrack.Views
 	{
         LoginViewModel loginViewModel;
         PropertiesHelper props;
-        UserDataStore uds;
+        string server;
+
 
 		public Login()
 		{
@@ -27,14 +29,78 @@ namespace PackageTrack.Views
             BindingContext = loginViewModel = new LoginViewModel();
             UserDataStore uds = new UserDataStore();
             Pinger pinger = new Pinger();
+            login_btn.IsEnabled = false;
 
             props = new PropertiesHelper();
+
+            server = props.GetPropertyValue("Server");
+            if (server == null || server.Length == 0)
+            {
+                props.SetPropertyValue("Server", "192.168.63.60");
+            }
+
+           IsConnected();
+
+            //if (CrossConnectivity.Current.IsReachable("192.168.63.123").Result == false)
+            //{
+            //    props.SetPropertyValue("DatabaseOnline", "Offline");
+            //    loginViewModel.DBOnline = "Offline";
+            //    login_btn.IsEnabled = false;
+
+
+            //}
+            //else
+            //{
+
+            //    props.SetPropertyValue("DatabaseOnline", "Online");
+            //    loginViewModel.DBOnline = "Online";
+            //    login_btn.IsEnabled = true;
+
+            //}
+
+            //bool test = pinger.PingAddress("192.168.63.123");
+
+            //if (test)
+            //{
+            //    props.SetPropertyValue("DatabaseOnline", "Online");
+            //    loginViewModel.DBOnline = "Online";
+            //    login_btn.IsEnabled = true;
+
+            //}
+            //else
+            //{
+            //    props.SetPropertyValue("DatabaseOnline", "Offline");
+            //    loginViewModel.DBOnline = "Offline";
+            //    login_btn.IsEnabled = false;
+
+            //}
+            //while (checkWait)
+            //{
+
+            //}
 
             loginViewModel.LoggedOnUser = "";
             start_btn.IsVisible = false;
             string userloggedin = props.GetPropertyValue("UserLoggedInUser") as string;
 
-            if (pinger.PingAddress("192.168.63.60"))
+
+            if (userloggedin.Length > 0)
+            {
+                loginViewModel.LoggedOnUser = userloggedin + " is logged in.";
+
+                start_btn.IsVisible = true;
+
+            }
+
+
+        }
+        public async  void IsConnected()
+        {
+            Task<bool> task = checkConnectivity();
+
+
+            bool test = await task;
+            if (test)
             {
                 props.SetPropertyValue("DatabaseOnline", "Online");
                 loginViewModel.DBOnline = "Online";
@@ -49,15 +115,47 @@ namespace PackageTrack.Views
 
             }
 
-            if (userloggedin.Length > 0)
+        }
+
+        private async Task<bool> checkConnectivity()
+        {
+            //return await Task.Run(async () =>
+            //{
+            //    bool mytest = await CrossConnectivity.Current.IsReachable("192.168.63.60");
+            //    return mytest;
+            //});
+
+            bool testcon = true;
+            try
             {
-                loginViewModel.LoggedOnUser = userloggedin + " is logged in.";
+                testcon = await CrossConnectivity.Current.IsReachable(server);
 
-                start_btn.IsVisible = true;
+                //if( await CrossConnectivity.Current.IsReachable(host.Text).Result == false)
+                //{
+                //    testcon = false;
+                //}
 
+                //Reachability.IsHostReachable("192.168.63.60");
+            }
+            catch (Exception e)
+            {
+                string message = e.Message;
             }
 
 
+            return testcon;
+        }
+        private async Task<bool> checkConnectivity2()
+        {
+
+
+            var connectivity = CrossConnectivity.Current;
+            if (!connectivity.IsConnected)
+                return false;
+
+            var reachable = await connectivity.IsRemoteReachable(server);
+
+            return reachable;
         }
 
         private async void goto_Main(object sender, EventArgs e)
@@ -65,7 +163,90 @@ namespace PackageTrack.Views
             await Navigation.PushAsync(new MainPage());
 
         }
+        async void Server_Clicked(object sender, EventArgs e)
+        {
+            server = props.GetPropertyValue("Server");
+            string myinput = await InputBox(this.Navigation, server);
+            if(myinput == null || myinput.Length == 0)
+            {
+               //display message - no input
+            }
+            else
+            {
+                props.SetPropertyValue("Server", myinput);
+            }
+            
+            server = props.GetPropertyValue("Server");
+            IsConnected();
 
+
+        }
+
+        public static Task<string> InputBox(INavigation navigation, string server)
+        {
+            // wait in this proc, until user did his input 
+            var tcs = new TaskCompletionSource<string>();
+
+            var lblTitle = new Label { Text = "Enter Server", HorizontalOptions = LayoutOptions.Center, FontAttributes = FontAttributes.Bold };
+            var lblServer = new Label { Text = "Current Server IP is: " + server };
+            var lblMessage = new Label { Text = "Enter new Server IP Address:" };
+            var txtInput = new Entry { Text = "" };
+
+            var btnOk = new Button
+            {
+                Text = "Ok",
+                WidthRequest = 100,
+                BackgroundColor = Color.FromRgb(0.8, 0.8, 0.8),
+            };
+            btnOk.Clicked += async (s, e) =>
+            {
+                // close page
+                var result = txtInput.Text;
+                await navigation.PopModalAsync();
+                // pass result
+                tcs.SetResult(result);
+            };
+
+            var btnCancel = new Button
+            {
+                Text = "Cancel",
+                WidthRequest = 100,
+                BackgroundColor = Color.FromRgb(0.8, 0.8, 0.8)
+            };
+            btnCancel.Clicked += async (s, e) =>
+            {
+                // close page
+                await navigation.PopModalAsync();
+                // pass empty result
+                tcs.SetResult(null);
+            };
+
+            var slButtons = new StackLayout
+            {
+                Orientation = StackOrientation.Horizontal,
+                Children = { btnOk, btnCancel },
+            };
+
+            var layout = new StackLayout
+            {
+                Padding = new Thickness(0, 40, 0, 0),
+                VerticalOptions = LayoutOptions.StartAndExpand,
+                HorizontalOptions = LayoutOptions.CenterAndExpand,
+                Orientation = StackOrientation.Vertical,
+                Children = { lblTitle, lblServer, lblMessage, txtInput, slButtons },
+            };
+
+            // create and show page
+            var page = new ContentPage();
+            page.Content = layout;
+            navigation.PushModalAsync(page);
+            // open keyboard
+            txtInput.Focus();
+
+            // code is waiting her, until result is passed with tcs.SetResult() in btn-Clicked
+            // then proc returns the result
+            return tcs.Task;
+        }
         private async void Login_OnClicked(object sender, EventArgs e)
         {
             
@@ -94,7 +275,13 @@ namespace PackageTrack.Views
                 }
             }
         }
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            server = props.GetPropertyValue("Server");
+            IsConnected();
 
+        }
         //async void OnAlertYesNoClicked(object sender, EventArgs e)
         //{
 

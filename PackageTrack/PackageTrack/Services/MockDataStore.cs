@@ -9,18 +9,24 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using PackageTrack.Models;
+using Xamarin.Forms;
 
 
 [assembly: Xamarin.Forms.Dependency(typeof(PackageTrack.Services.MockDataStore))]
 namespace PackageTrack.Services
 {
+
     public class MockDataStore : IDataStore<Item>
     {
+
         HttpClient client = new HttpClient();
         //string RestUrlHead = "http://10.5.90.209:3000/items";    //KLC Server
-        string RestUrlHead = "http://192.168.63.60:3000/items";  //Laptop
+        string RestUrlHead;
+        //string RestUrlHead = "http://192.168.10.109:3000/items";
+
         List<Item> items;
         PropertiesHelper props;
+        string server;
         
         //string rawItems;
         FileEngine fileEngine = new FileEngine();
@@ -30,14 +36,32 @@ namespace PackageTrack.Services
             items = new List<Item>();
             client.MaxResponseContentBufferSize = 256000;
             props = new PropertiesHelper();
+            server = props.GetPropertyValue("Server");
 
-            var restItems = GetItemsAsync();
+            if (server == null || server.Length == 0)
+            {
+                 //DisplayAlert("Alert", "You are not online", "OK");
+            }
+            else
+            {
+
+                GetRestURL(server);
+                var restItems = GetItemsAsync();
+            }
+
+        }
+
+        private void GetRestURL(string server)
+        {
+            RestUrlHead = "http://" + server + ":3000/items";
         }
 
         public async Task<bool> AddItemAsync(Item item)
         {
 
             ItemAdd addItem = item;
+            server = props.GetPropertyValue("Server");
+            GetRestURL(server);
 
             Dictionary<string, string> dict = ConvertToDictionary(addItem);
             var client = new HttpClient();
@@ -45,6 +69,7 @@ namespace PackageTrack.Services
             var res = await client.SendAsync(req);
            // Console.WriteLine("JFG-additemasync - mockdatastore");
             var items = GetItemsAsync();
+
 
             return await Task.FromResult(true);
         }
@@ -55,6 +80,8 @@ namespace PackageTrack.Services
             //var _item = items.Where((Item arg) => arg._id == item._id).FirstOrDefault();
             //items.Remove(_item);
             //items.Add(item);
+            server = props.GetPropertyValue("Server");
+            GetRestURL(server);
             ItemAdd addItem = item;
             Dictionary<string, string> dict = ConvertToDictionaryUpdate(addItem);
             var client = new HttpClient();
@@ -105,6 +132,8 @@ namespace PackageTrack.Services
         public async Task<IEnumerable<Item>> GetItemsAsync(bool forceRefresh = false)
         {
             var restItems = new List<Item>();
+            server = props.GetPropertyValue("Server");
+            GetRestURL(server);
 
             if (props.GetPropertyValue("DatabaseOnline").Equals("Online"))
             {
@@ -135,18 +164,22 @@ namespace PackageTrack.Services
                 }
                 catch (TaskCanceledException tcex)
                 {
+                    props.SetPropertyValue("DatabaseOnline", "Offline");
                     restItems = await GetOfflineData(restItems);
                     Console.WriteLine("taskcanceled: " + tcex.Message);
                 }
                 catch (Exception ex)
                 {
+                    props.SetPropertyValue("DatabaseOnline", "Offline");
                     restItems = await GetOfflineData(restItems);
                     Console.WriteLine("taskexception: " + ex.Message);
                 }
             }
             else
             {
+                props.SetPropertyValue("DatabaseOnline", "Offline");
                 restItems = await GetOfflineData(restItems);
+
             }
 
 

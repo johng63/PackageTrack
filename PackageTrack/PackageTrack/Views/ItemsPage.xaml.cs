@@ -20,6 +20,7 @@ namespace PackageTrack.Views
         ItemsViewModel viewModel;
         PropertiesHelper props;
         string barCodeReturned = "";
+        string dbOnline;
 
         public ItemsPage()
         {
@@ -27,7 +28,8 @@ namespace PackageTrack.Views
 
             BindingContext = viewModel = new ItemsViewModel();
             props = new PropertiesHelper();
-            viewModel.DBOnline = props.GetPropertyValue("DatabaseOnline");
+            dbOnline = props.GetPropertyValue("DatabaseOnline");
+            viewModel.DBOnline = dbOnline;
 
         }
 
@@ -45,36 +47,35 @@ namespace PackageTrack.Views
 
         async void AddItem_Clicked(object sender, EventArgs e)
         {
-            var scanPage = new ZXingScannerPage();
-            barCodeReturned = "";
+            if (dbOnline.Equals("Online"))
+            {
+                var scanPage = new ZXingScannerPage();
+                barCodeReturned = "";
 
-            scanPage.Disappearing += ScanPage_Disappearing;
-         
+                scanPage.Disappearing += ScanPage_Disappearing;
 
-
-        scanPage.OnScanResult += (result) => {
-                // Stop scanning
-                scanPage.IsScanning = false;
-                
-                // Pop the page and show the result
-                Device.BeginInvokeOnMainThread(() =>
+                scanPage.OnScanResult += (result) =>
                 {
+                    // Stop scanning
+                    scanPage.IsScanning = false;
 
-                    // Item = new Item
-                    //{
-                    barCodeReturned = result.Text;
-                    Navigation.PopAsync();
-                    
+                    // Pop the page and show the result
+                    Device.BeginInvokeOnMainThread(() =>
+                    {
+                        barCodeReturned = result.Text;
+                        Navigation.PopAsync();
 
-                    //};
-                    // DisplayAlert("Scanned Barcode", result.Text, "OK");
-
-                });
-            };
-            // await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
-            await Navigation.PushAsync(scanPage);
-          //  Navigation.PushAsync(new NewItemPage(barCodeReturned));
-            ///await  Navigation.PopAsync();
+                    });
+                };
+                // await Navigation.PushModalAsync(new NavigationPage(new NewItemPage()));
+                await Navigation.PushAsync(scanPage);
+                //  Navigation.PushAsync(new NewItemPage(barCodeReturned));
+                ///await  Navigation.PopAsync();
+            } else
+            {
+                //message Can't add when Offline
+                await DisplayAlert("Alert", "You are not online", "OK");
+            }
         }
 
         private void ScanPage_Disappearing(object sender, EventArgs e)
@@ -90,12 +91,7 @@ namespace PackageTrack.Views
             if (viewModel.Items.Count == 0)
                 viewModel.LoadItemsCommand.Execute(null);
         }
-        //protected override void OnDisappearing()
-        //{
-        //    base.OnDisappearing();
-        //    Console.WriteLine("JFG-ItemPage.cs On-Disapearing Un-subscribe");
-        //    MessagingCenter.Unsubscribe<NewItemPage, Item>(this, "AddItem");
-        //}
+
     
-}
+    }
 }
