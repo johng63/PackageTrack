@@ -11,6 +11,8 @@ using PackageTrack.Models;
 using PackageTrack.Views;
 using PackageTrack.ViewModels;
 using ZXing.Net.Mobile.Forms;
+using MvvmHelpers;
+using System.Collections.ObjectModel;
 
 namespace PackageTrack.Views
 {
@@ -21,6 +23,8 @@ namespace PackageTrack.Views
         PropertiesHelper props;
         string barCodeReturned = "";
         string dbOnline;
+        //private readonly ObservableRangeCollection<Grouping<string, Item>> _myItems = new ObservableRangeCollection<Grouping<string, Item>>();
+        //public ObservableCollection<Grouping<string, Item>> MyItems => _myItems;
 
         public ItemsPage()
         {
@@ -90,6 +94,8 @@ namespace PackageTrack.Views
 
             if (viewModel.Items.Count == 0)
                 viewModel.LoadItemsCommand.Execute(null);
+
+
         }
 
     

@@ -41,6 +41,8 @@ namespace PackageTrack.Views
 
            IsConnected();
 
+            //System.Threading.Thread.Sleep(5000);
+
             //if (CrossConnectivity.Current.IsReachable("192.168.63.123").Result == false)
             //{
             //    props.SetPropertyValue("DatabaseOnline", "Offline");
@@ -97,7 +99,7 @@ namespace PackageTrack.Views
         public async  void IsConnected()
         {
             Task<bool> task = checkConnectivity();
-
+            System.Threading.Thread.Sleep(800);
 
             bool test = await task;
             if (test)

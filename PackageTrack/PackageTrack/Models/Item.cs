@@ -14,5 +14,6 @@ namespace PackageTrack.Models
         //public string Status { get; set; }
         public string Description { get; set; }
         public string ___v { get; set; }
+        public string Detail1 { get { return CheckInUser + " " + CheckInDate + " " + Project; } }
     }
 }

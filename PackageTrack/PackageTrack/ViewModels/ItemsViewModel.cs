@@ -52,6 +52,7 @@ namespace PackageTrack.ViewModels
                 {
                     Items.Add(item);
                 }
+
                 isDBOnline = props.GetPropertyValue("DatabaseOnline");
             }
             catch (Exception ex)
